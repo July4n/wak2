@@ -554,7 +554,10 @@ class TitleState extends MusicBeatState
 								}
 							});
 							FlxG.sound.music.fadeOut();
+							if(FreeplayState.vocals != null)
 							{
+								FreeplayState.vocals.fadeOut();
+							}
 							closedState = true;
 							transitioning = true;
 							playJingle = true;
@@ -649,8 +652,9 @@ class TitleState extends MusicBeatState
 				// credTextShit.visible = true;
 				case 4:
 					#if PSYCH_WATERMARKS
-					addMoreText('The PacFunk', 15);
-					addMoreText('Team', 15);
+					addMoreText('Shadow Mario', 15);
+					addMoreText('RiverOaken', 15);
+					addMoreText('shubs', 15);
 					#else
 					addMoreText('present');
 					#end
@@ -690,13 +694,13 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = "Friday";
 				// credTextShit.screenCenter();
 				case 14:
-					addMoreText('FnF');
+					addMoreText('Friday');
 				// credTextShit.visible = true;
 				case 15:
-					addMoreText('Vs');
+					addMoreText('Night');
 				// credTextShit.text += '\nNight';
 				case 16:
-					addMoreText('Pac Mam'); // credTextShit.text += '\nFunkin';
+					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
 
 				case 17:
 					skipIntro();
