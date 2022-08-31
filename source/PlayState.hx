@@ -2017,7 +2017,7 @@ class PlayState extends MusicBeatState
 		Paths.sound('intro2' + introSoundsSuffix);
 		Paths.sound('intro1' + introSoundsSuffix);
 		Paths.sound('introGo' + introSoundsSuffix);
-	}
+
 			startedCountdown = true;
 			skippedText = new FlxText(0, 0, FlxG.width,
 				"Press SPACE to skip intro.",
@@ -2028,6 +2028,7 @@ class PlayState extends MusicBeatState
 			add(skippedText);
 			//Conductor.songPosition = 0;
 			//Conductor.songPosition -= Conductor.crochet * 5;
+	}
 
 	public function startCountdown():Void
 	{
