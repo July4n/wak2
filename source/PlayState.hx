@@ -1298,7 +1298,8 @@ class PlayState extends MusicBeatState
 		
 		// I love adding random comments somewhere in the code
 		//                                           - broster
-		else if (daSong == 'cornered' || daSong == 'freebase')  {
+		else if (daSong == 'cornered' || daSong == 'freebase')  
+		{
 			skippedIntro = true;
 			generateStaticArrows(0);
 			generateStaticArrows(1);
