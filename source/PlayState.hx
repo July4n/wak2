@@ -2200,7 +2200,7 @@ class PlayState extends MusicBeatState
 	{
 		scoreTxt.text = 'Score: ' + songScore
 		+ ' | Combo Breaks: ' + songMisses
-		+ ' | Accuracy: ' + (ratingName != '?' + ' ${Highscore.floorDecimal(ratingPercent * 100, 2)}% - $ratingFC' : '');
+		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' + '[ ' +ratingFC+ '] ');
 
 		if(ClientPrefs.scoreZoom && !miss && !cpuControlled)
 		{
@@ -5081,11 +5081,11 @@ class PlayState extends MusicBeatState
 
 			// Rating FC
 			ratingFC = "";
-			if (sicks > 0) ratingFC = "[SFC]";
-			if (goods > 0) ratingFC = "[GFC]";
-			if (bads > 0 || shits > 0) ratingFC = "[FC]";
-			if (songMisses > 0 && songMisses < 10) ratingFC = "[SDCB]";
-			else if (songMisses >= 10) ratingFC = "[Break]";
+			if (sicks > 0) ratingFC = "SFC";
+			if (goods > 0) ratingFC = "GFC";
+			if (bads > 0 || shits > 0) ratingFC = "FC";
+			if (songMisses > 0 && songMisses < 10) ratingFC = "SDCB";
+			else if (songMisses >= 10) ratingFC = "Break";
 		}
 		updateScore(badHit); // score will only update after rating is calculated, if it's a badHit, it shouldn't bounce -Ghost
 		setOnLuas('rating', ratingPercent);
