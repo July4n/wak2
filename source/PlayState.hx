@@ -2200,7 +2200,7 @@ class PlayState extends MusicBeatState
 	{
 		scoreTxt.text = 'Score: ' + songScore
 		+ ' | Combo Breaks: ' + songMisses
-		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' + '[' + ratingFC+ ']');
+		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' + '[' + ratingFC+ ']';
 
 		if(ClientPrefs.scoreZoom && !miss && !cpuControlled)
 		{
