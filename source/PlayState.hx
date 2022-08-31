@@ -2198,7 +2198,7 @@ class PlayState extends MusicBeatState
 
 	public function updateScore(miss:Bool = false)
 	{
-		scoreTxt.text = 'Score: ' + songScore
+	scoreTxt.text = 'Score: ' + songScore
 		+ ' | Combo Breaks: ' + songMisses
 		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' + '[' + ratingFC+ ']';
 
