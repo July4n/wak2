@@ -2018,16 +2018,6 @@ class PlayState extends MusicBeatState
 		Paths.sound('intro1' + introSoundsSuffix);
 		Paths.sound('introGo' + introSoundsSuffix);
 
-			startedCountdown = true;
-			skippedText = new FlxText(0, 0, FlxG.width,
-				"Press SPACE to skip intro.",
-				32);
-			skippedText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			skippedText.screenCenter(Y);
-			skippedText.cameras = [camHUD];
-			add(skippedText);
-			//Conductor.songPosition = 0;
-			//Conductor.songPosition -= Conductor.crochet * 5;
 	}
 
 	public function startCountdown():Void
