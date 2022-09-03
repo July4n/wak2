@@ -93,25 +93,32 @@ class PlayState extends MusicBeatState
 		['Sick!', 1], //From 90% to 99%
 		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
+
+	//event variables
+	private var isCameraOnForcedPos:Bool = false;
+
+	#if (haxe >= "4.0.0")
+	public var boyfriendMap:Map<String, Boyfriend> = new Map();
+	public var dadMap:Map<String, Character> = new Map();
+	public var gfMap:Map<String, Character> = new Map();
+	public var variables:Map<String, Dynamic> = new Map();
 	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
 	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
 	public var modchartTimers:Map<String, FlxTimer> = new Map<String, FlxTimer>();
 	public var modchartSounds:Map<String, FlxSound> = new Map<String, FlxSound>();
 	public var modchartTexts:Map<String, ModchartText> = new Map<String, ModchartText>();
 	public var modchartSaves:Map<String, FlxSave> = new Map<String, FlxSave>();
-
-	//event variables
-	private var isCameraOnForcedPos:Bool = false;
-	#if (haxe >= "4.0.0")
-	public var boyfriendMap:Map<String, Boyfriend> = new Map();
-	public var dadMap:Map<String, Character> = new Map();
-	public var gfMap:Map<String, Character> = new Map();
-	public var variables:Map<String, Dynamic> = new Map();
 	#else
 	public var boyfriendMap:Map<String, Boyfriend> = new Map<String, Boyfriend>();
 	public var dadMap:Map<String, Character> = new Map<String, Character>();
 	public var gfMap:Map<String, Character> = new Map<String, Character>();
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public var modchartTweens:Map<String, FlxTween> = new Map();
+	public var modchartSprites:Map<String, ModchartSprite> = new Map();
+	public var modchartTimers:Map<String, FlxTimer> = new Map();
+	public var modchartSounds:Map<String, FlxSound> = new Map();
+	public var modchartTexts:Map<String, ModchartText> = new Map();
+	public var modchartSaves:Map<String, FlxSave> = new Map();
 	#end
 
 	public var BF_X:Float = 770;
@@ -400,10 +407,7 @@ class PlayState extends MusicBeatState
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
 		if (isStoryMode)
 		{
-			tempName = WeekData.getCurrentWeek().weekName;
-			if (tempName == 'Custom Week')
-				tempName = 'Pac\'n\'Funk';
-			detailsText = "Story Mode: " + tempName;
+			detailsText = "Story Mode: " + WeekData.getCurrentWeek().weekName;
 		}
 		else
 		{
@@ -1039,7 +1043,7 @@ class PlayState extends MusicBeatState
 		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this,
 			'songPercent', 0, 1);
 		timeBar.scrollFactor.set();
-		timeBar.createFilledBar(0xFFFFF891 , 0xFFFFFFFF);
+		timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
 		timeBar.numDivisions = 800; //How much lag this causes?? Should i tone it down to idk, 400 or 200?
 		timeBar.alpha = 0;
 		timeBar.visible = showTime;
@@ -1160,7 +1164,7 @@ class PlayState extends MusicBeatState
 		scoreTxt.visible = !ClientPrefs.hideHud;
 		add(scoreTxt);
 
-		botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "PENE", 32);
+		botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
 		botplayTxt.borderSize = 1.25;
@@ -1220,8 +1224,8 @@ class PlayState extends MusicBeatState
 			luaArray.push(new FunkinLua(Asset2File.getPath(luaFile)));
 		#end
 
-			var daSong:String = Paths.formatToSongPath(curSong);
-		if (isStoryMode && !seenCutscene && daSong != 'cornered')
+		var daSong:String = Paths.formatToSongPath(curSong);
+		if (isStoryMode && !seenCutscene)
 		{
 			switch (daSong)
 			{
@@ -1295,9 +1299,6 @@ class PlayState extends MusicBeatState
 			startCountdown();
 		}
 		RecalculateRating();
-		
-		// I love adding random comments somewhere in the code//                            - broster
-
 
 		//PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
 		if(ClientPrefs.hitsoundVolume > 0) precacheList.set('hitsound', 'sound');
@@ -1522,6 +1523,7 @@ class PlayState extends MusicBeatState
 	public function getLuaObject(tag:String, text:Bool=true):FlxSprite {
 		if(modchartSprites.exists(tag)) return modchartSprites.get(tag);
 		if(text && modchartTexts.exists(tag)) return modchartTexts.get(tag);
+		if(variables.exists(tag)) return variables.get(tag);
 		return null;
 	}
 
@@ -2017,7 +2019,6 @@ class PlayState extends MusicBeatState
 		Paths.sound('intro2' + introSoundsSuffix);
 		Paths.sound('intro1' + introSoundsSuffix);
 		Paths.sound('introGo' + introSoundsSuffix);
-
 	}
 
 	public function startCountdown():Void
@@ -2106,9 +2107,10 @@ class PlayState extends MusicBeatState
 				switch (swagCounter)
 				{
 					case 0:
-						pacSound = FlxG.sound.load(Paths.sound('pacstart'));
-						pacSound.play(false, 0.6);
+						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
+					case 1:
 						countdownReady = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+						countdownReady.cameras = [camHUD];
 						countdownReady.scrollFactor.set();
 						countdownReady.updateHitbox();
 
@@ -2117,7 +2119,59 @@ class PlayState extends MusicBeatState
 
 						countdownReady.screenCenter();
 						countdownReady.antialiasing = antialias;
-						add(countdownReady);
+						insert(members.indexOf(notes), countdownReady);
+						FlxTween.tween(countdownReady, {/*y: countdownReady.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownReady);
+								countdownReady.destroy();
+							}
+						});
+						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
+					case 2:
+						countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+						countdownSet.cameras = [camHUD];
+						countdownSet.scrollFactor.set();
+
+						if (PlayState.isPixelStage)
+							countdownSet.setGraphicSize(Std.int(countdownSet.width * daPixelZoom));
+
+						countdownSet.screenCenter();
+						countdownSet.antialiasing = antialias;
+						insert(members.indexOf(notes), countdownSet);
+						FlxTween.tween(countdownSet, {/*y: countdownSet.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownSet);
+								countdownSet.destroy();
+							}
+						});
+						FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
+					case 3:
+						countdownGo = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+						countdownGo.cameras = [camHUD];
+						countdownGo.scrollFactor.set();
+
+						if (PlayState.isPixelStage)
+							countdownGo.setGraphicSize(Std.int(countdownGo.width * daPixelZoom));
+
+						countdownGo.updateHitbox();
+
+						countdownGo.screenCenter();
+						countdownGo.antialiasing = antialias;
+						insert(members.indexOf(notes), countdownGo);
+						FlxTween.tween(countdownGo, {/*y: countdownGo.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownGo);
+								countdownGo.destroy();
+							}
+						});
+						FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
+					case 4:
 				}
 
 				notes.forEachAlive(function(note:Note) {
@@ -2188,7 +2242,7 @@ class PlayState extends MusicBeatState
 
 	public function updateScore(miss:Bool = false)
 	{
-	scoreTxt.text = 'Score: ' + songScore
+		scoreTxt.text = 'Score: ' + songScore
 		+ ' | Combo Breaks: ' + songMisses
 		+ ' | Accuracy: ' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%' + '[' + ratingFC+ ']';
 
@@ -5002,7 +5056,7 @@ class PlayState extends MusicBeatState
 			// had to do this because there is a bug in haxe where Stop != Continue doesnt work
 			var bool:Bool = ret == FunkinLua.Function_Continue;
 			if(!bool) {
-				returnVal = cast ret;
+				returnVal = ret;
 			}
 		}
 		#end
@@ -5075,7 +5129,7 @@ class PlayState extends MusicBeatState
 			if (goods > 0) ratingFC = "GFC";
 			if (bads > 0 || shits > 0) ratingFC = "FC";
 			if (songMisses > 0 && songMisses < 10) ratingFC = "SDCB";
-			else if (songMisses >= 10) ratingFC = "Break";
+			else if (songMisses >= 10) ratingFC = "Clear";
 		}
 		updateScore(badHit); // score will only update after rating is calculated, if it's a badHit, it shouldn't bounce -Ghost
 		setOnLuas('rating', ratingPercent);
